@@ -12,6 +12,41 @@ from matplotlib import mlab
 import matplotlib.pyplot as plt
 
 import IPython
+from scipy.io.arff import loadarff
+import sklearn.preprocessing
+from sklearn.cross_validation import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+
+features = loadarff("./genre_model.arff")
+genres = ['blues',
+          'classical',
+          'country',
+          'disco',
+          'hiphop',
+          'jazz',
+          'metal',
+          'pop',
+          'reggae',
+          'rock']
+
+X = np.array(np.array([list(f)[:-1] for f in features[0]]))
+y = [f[-1] for f in features[0]]
+y = sklearn.preprocessing.LabelEncoder().fit_transform(y)
+
+def get_features(genre, number):
+    """Fetches the feature vector for a given genre and number
+    """
+    my_index = 100 * genres.index(genre) + (number - 1)
+    return features[0][my_index]
+
+def test_train_split():
+    """Gets x and y, train and test
+    """
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.33)
+        
+    return X_train, X_test, y_train, y_test
+    
 
 def standardize(old_rate, audio):
     if audio.ndim == 2:
